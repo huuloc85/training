@@ -13,8 +13,12 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('proName');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('admin_users');
+            $table->string('proName')->unique();
+            $table->string('proSlug')->unique();
             $table->string('proImage');
+            $table->string('proImageDetail');
             $table->string('proDetail');
             $table->integer('proPrice');
             $table->integer('proQuantity');

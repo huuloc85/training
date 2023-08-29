@@ -47,7 +47,9 @@
                     </ul>
                     <div class="d-md-block d-none">
                         <a href="#" class="text-light p-1"><i class="mdi mdi-view-dashboard"></i></a>
+
                         <a href="#" class="text-light p-1"><i class="mdi mdi-dots-vertical"></i></a>
+
                     </div>
                 </div>
                 <div class="tab-content tab-transparent-content">

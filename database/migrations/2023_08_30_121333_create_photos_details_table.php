@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('photos_details', function (Blueprint $table) {
             $table->id();
-            $table->string('proImageDetails');
+            $table->unsignedBigInteger('proImageDetails');
+            $table->foreign('proImageDetails')->references('id')->on('products');
             $table->timestamps();
         });
     }

@@ -18,12 +18,15 @@ return new class extends Migration
             $table->string('proName')->unique();
             $table->string('proSlug')->unique();
             $table->string('proImage');
-            $table->string('proImageDetail');
+            $table->unsignedBigInteger('proImageDetails');
+            $table->foreign('proImageDetails')->references('id')->on('photos_details');
             $table->string('proDetail');
             $table->integer('proPrice');
             $table->integer('proQuantity');
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id')->references('id')->on('categories');
+            $table->string('admin_user_added');
+            $table->string('admin_user_updated');
             $table->timestamps();
         });
     }

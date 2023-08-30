@@ -18,6 +18,7 @@ return new class extends Migration
             $table->BigInteger('total');
             $table->dateTimeTz('date_at');
             $table->string('note')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('proImageDetails');
             $table->foreign('proImageDetails')->references('id')->on('products');
+            $table->string('photos');
             $table->timestamps();
         });
     }

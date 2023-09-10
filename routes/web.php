@@ -30,10 +30,11 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
     Route::get('index', [DashBoardController::class, 'index'])->name('admin.index');
 
     //user routes
-    Route::prefix('user')->group(function () {
+    Route::prefix('user')->middleware(['RoleCheck'])->group(function () {
         Route::get('list', [UserController::class, 'list'])->name('user-list');
         Route::get('add', [UserController::class, 'add'])->name('user-add');
         Route::post('save', [UserController::class, 'save'])->name('user-save');
+        Route::post('send-email', [UserController::class, 'sendMail'])->name('send-email');
         Route::delete('delete/{id}', [UserController::class, 'delete'])->name('user-delete');
         Route::get('edit/{id}', [UserController::class, 'edit'])->name('user-edit');
         Route::post('update/{id}', [UserController::class, 'update'])->name('user-update');

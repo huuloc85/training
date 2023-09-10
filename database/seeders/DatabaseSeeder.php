@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
         $admin_user->email = "loc@gmail.com";
         $admin_user->mobile  = '0898406358';
         $admin_user->password = bcrypt(123456);
-        $admin_user->repassword = bcrypt(123456);
         $admin_user->photo = 'Screenshot 2023-08-16 102203.png';
         $admin_user->save();
 
@@ -46,7 +45,6 @@ class DatabaseSeeder extends Seeder
         $admin_user->email = "phi@gmail.com";
         $admin_user->mobile  = '0898406348';
         $admin_user->password = bcrypt(123456);
-        $admin_user->repassword = bcrypt(123456);
         $admin_user->photo = 'Screenshot 2023-08-16 102203.png';
         $admin_user->save();
     }

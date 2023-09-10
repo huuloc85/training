@@ -19,7 +19,7 @@
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item"> <a class="nav-link" href="{{ route('user-add') }}">Add</a></li>
                         <li class="nav-item"> <a class="nav-link" href="{{ route('user-list') }}">List</a></li>
-                        <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Update</a>
+                        <li class="nav-item"> <a class="nav-link" href="{{ route('user-list') }}">Edit</a>
                         </li>
                     </ul>
                 </div>
@@ -27,12 +27,12 @@
         @endif
         <li class="nav-item">
             <a class="nav-link" data-bs-toggle="collapse" href="#ui-basic" aria-expanded="false"
-                aria-controls="ui-basic">
+                aria-controls="menu-user">
                 <span class="icon-bg"><i class="mdi mdi-crosshairs-gps menu-icon"></i></span>
                 <span class="menu-title">Admin User</span>
                 <i class="menu-arrow"></i>
             </a>
-            <div class="collapse" id="ui-basic">
+            <div class="collapse" id="menu-user">
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
                     <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a></li>

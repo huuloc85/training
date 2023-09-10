@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -11,11 +12,11 @@ class RoleCheck
     {
         $userRole = auth()->user()->role; // Lấy vai trò của người dùng
 
-        if ($userRole === 1) {
-            return $next($request); // Cho phép truy cập nếu vai trò là 1
+        if ($userRole == User::ROLE_ADMIN) {
+            return $next($request); // Cho phép truy cập nếu vai trò là Admin
         }
 
-        // Nếu vai trò không phải 1, chuyển hướng hoặc xử lý lỗi
-        return redirect('/'); // Ví dụ: Chuyển hướng về trang chính hoặc xử lý lỗi khác
+        // Nếu vai trò không phải Admin, chuyển hướng hoặc xử lý lỗi
+        return redirect()->route('admin.index')->with('error', 'Mày đéo phải admin đâu thằng ngu');
     }
 }

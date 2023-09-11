@@ -4,13 +4,14 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Jobs\SendEmail;
-use App\Mail\MailNotify;
+
+use App\Jobs\SendEmployeeRegistrationEmail;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use App\Mail\EmployeeAccountCreated;
-use Illuminate\Support\Facades\Mail;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserController extends Controller
 {
@@ -25,37 +26,48 @@ class UserController extends Controller
     }
     public function save(Request $request)
     {
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->username = $request->username;
-        $user->password = $request->password;
-        $user->role = $request->role;
-        $user->mobile = $request->mobile;
-
-        $file = $request->image;
-
-        if ($request->hasFile('image')) {
-            $fileExtension = $file->getClientOriginalName();
-            $fileName = time(); // Tạo tên file dựa trên thời gian
-            $newFileName = $fileName . '.' . $fileExtension; // Tên file mới
-            //Lưu file vào thư mục storage/app/public/image với tên mới
-            $request->file('image')->storeAs('public/user', $newFileName);
-            // Gán trường image của đối tượng task với tên mới
-            $user->photo = $newFileName;
-        }
         try {
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->username = $request->username;
+            $user->password = bcrypt($request->password); // Hash mật khẩu trước khi lưu
+            $user->role = $request->role;
+            $user->mobile = $request->mobile;
+
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $fileExtension = $file->getClientOriginalExtension();
+                $fileName = time(); // Tạo tên file dựa trên thời gian
+                $newFileName = $fileName . '.' . $fileExtension; // Tên file mới
+                //Lưu file vào thư mục storage/app/public/user với tên mới
+                $file->storeAs('public/user', $newFileName);
+                // Gán trường image của đối tượng user với tên mới
+                $user->photo = $newFileName;
+            }
 
             $user->save();
+
+            // Gửi email và mật khẩu cho nhân viên
+            $employeeData = [
+                'name' => $user->name,
+                'email' => $user->email,
+                'password' => $request->password,
+            ];
+
+            dispatch(new SendEmployeeRegistrationEmail($employeeData));
+
             return redirect()->route('user-add')->with('success', 'Successful Add Employee!!!');
         } catch (\Exception $th) {
             dd($th->getMessage());
-            $image = 'public/user/' . $user->image;
-            Storage::delete($image);
+            // Xử lý lỗi và xóa hình ảnh nếu cần thiết
+            if (isset($user->photo)) {
+                $image = 'public/user/' . $user->photo;
+                Storage::delete($image);
+            }
             return redirect()->back()->with('error', 'Add Employee Failed!!!');
         }
     }
-
 
     public function edit($id)
     {
@@ -108,15 +120,45 @@ class UserController extends Controller
         $user->delete();
         return redirect()->back()->with('success', 'User delete successfully!');
     }
-    public function createEmployeeAccount(Request $request)
+    public function showViewChangePassword()
     {
-        // Tạo tài khoản cho employee và lấy mật khẩu tạm thời
-        $password = 'your_generated_password'; // Thay thế bằng mật khẩu tạm thời thực tế
+        // Đưa code để hiển thị view thay đổi mật khẩu ở đây
+        return view('admin.user_employee.change-password');
+    }
 
-        // Gửi email với mật khẩu
-        $email = $request->input('email');
-        Mail::to($email)->send(new EmployeeAccountCreated($password));
+    public function changePassword(Request $request)
+    {
+        // Lấy email của người dùng đang đăng nhập
+        $email = Auth::user()->email;
 
-        // Rest of your code...
+        // Kiểm tra xác thực
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|min:6',
+            'new_password_confirmation' => 'required|same:new_password',
+        ]);
+
+        // Lấy thông tin từ biểu mẫu
+        $oldPassword = $request->old_password;
+        $newPassword = $request->new_password;
+        // Tìm người dùng theo email
+        $user = User::where('email', $email)->first();
+
+        if ($user) {
+            // Kiểm tra mật khẩu cũ
+            if (Hash::check($oldPassword, $user->password)) {
+                // Cập nhật mật khẩu mới
+                $user->password = bcrypt($newPassword);
+                $user->save();
+                // Chuyển hướng với thông báo thành công
+                return redirect()->route('adminLogin')->with('success', 'Password changed successfully!!');
+            } else {
+                // Chuyển hướng với thông báo lỗi nếu mật khẩu cũ không khớp
+                return redirect()->back()->with('error', 'Old password is incorrect');
+            }
+        } else {
+            // Chuyển hướng với thông báo lỗi nếu email không tồn tại
+            return redirect()->back()->with('error', 'Email is not correct');
+        }
     }
 }

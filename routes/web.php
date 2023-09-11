@@ -27,14 +27,15 @@ Route::prefix('admin')->group(function () {
 });
 //dashboad routes
 Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
-    Route::get('index', [DashBoardController::class, 'index'])->name('admin.index');
 
+    Route::get('index', [DashBoardController::class, 'index'])->name('admin.index');
+    Route::get('change-password', [UserController::class, 'showViewChangePassword'])->name('show-change-password');
+    Route::post('change-password', [UserController::class, 'changePassword'])->name('change-password');
     //user routes
     Route::prefix('user')->middleware(['RoleCheck'])->group(function () {
         Route::get('list', [UserController::class, 'list'])->name('user-list');
         Route::get('add', [UserController::class, 'add'])->name('user-add');
         Route::post('save', [UserController::class, 'save'])->name('user-save');
-        Route::post('send-email', [UserController::class, 'sendMail'])->name('send-email');
         Route::delete('delete/{id}', [UserController::class, 'delete'])->name('user-delete');
         Route::get('edit/{id}', [UserController::class, 'edit'])->name('user-edit');
         Route::post('update/{id}', [UserController::class, 'update'])->name('user-update');

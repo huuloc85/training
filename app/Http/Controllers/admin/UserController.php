@@ -204,7 +204,8 @@ class UserController extends Controller
             $user->save();
             return redirect()->back()->with('success', 'Change Information Successfully!');
         } catch (\Exception $th) {
-            dd($th->getMessage());
+
+
             // Log the exception for debugging
 
             // Revert image change in case of an error

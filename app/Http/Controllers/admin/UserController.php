@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
+use Spatie\LaravelIgnition\Recorders\DumpRecorder\Dump;
 
 class UserController extends Controller
 {
@@ -161,22 +161,34 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Email is not correct');
         }
     }
-    public function changeInfor($id)
+    public function changeInfor()
     {
-        $user = User::find($id);
+        $user = Auth::user(); // Lấy người dùng hiện tại
+        // Hiển thị trang thay đổi thông tin với thông tin người dùng
         return view('admin.user_employee.change-infor', compact('user'));
     }
-    public function updateInfor($id, Request $request)
+    public function updateInfor(Request $request)
     {
-        // Find the user by ID
-        $user = User::find($id);
+        // Lấy ID người dùng hiện tại
+        $userId = Auth::id();
 
-        // Check if the user exists
-        if (!$user) {
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!$userId) {
             return redirect()->back()->with('error', 'User not found');
         }
 
-        // Update user information
+        // Lấy thông tin người dùng theo ID
+        $user = User::find($userId);
+
+        // Kiểm tra nếu người dùng không tồn tại
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+        if ($user->role == 2) {
+            return redirect()->back()->with('error', 'You are not allowed to change your role.');
+        }
+
+        // Cập nhật thông tin người dùng
         $user->name = $request->name;
         $user->email = $request->email;
         $user->username = $request->username;
@@ -194,7 +206,7 @@ class UserController extends Controller
             $request->file('new_image')->storeAs('public/user', $newFileName);
             $user->photo = $newFileName;
 
-            // Delete the old image if it exists
+            // Xóa ảnh cũ nếu tồn tại
             if ($oldImg) {
                 Storage::delete('public/user/' . $oldImg);
             }
@@ -204,11 +216,9 @@ class UserController extends Controller
             $user->save();
             return redirect()->back()->with('success', 'Change Information Successfully!');
         } catch (\Exception $th) {
+            // Xử lý lỗi (log và thực hiện các hành động cần thiết)
 
-
-            // Log the exception for debugging
-
-            // Revert image change in case of an error
+            // Đảo ngược thay đổi ảnh nếu có lỗi
             if ($request->hasFile('new_image')) {
                 $image = 'public/user/' . $newFileName;
                 Storage::delete($image);

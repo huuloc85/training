@@ -4,6 +4,7 @@ use App\Http\Controllers\admin\DashBoardController;
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\CategoryController;
+use App\Http\Controllers\admin\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,5 +53,13 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
         Route::delete('delete/{id}', [CategoryController::class, 'delete'])->name('category-delete');
         Route::get('edit/{catSlug}', [CategoryController::class, 'edit'])->name('category-edit');
         Route::put('update/{catSlug}', [CategoryController::class, 'update'])->name('category-update');
+    });
+    Route::prefix('product')->group(function () {
+        Route::get('list', [ProductController::class, 'list'])->name('product-list');
+        Route::get('add', [ProductController::class, 'add'])->name('product-add');
+        Route::post('save', [ProductController::class, 'save'])->name('product-save');
+        Route::delete('delete/{id}', [ProductController::class, 'delete'])->name('product-delete');
+        Route::get('edit/{proSlug}', [ProductController::class, 'edit'])->name('product-edit');
+        Route::put('update/{proSlug}', [ProductController::class, 'update'])->name('product-update');
     });
 });

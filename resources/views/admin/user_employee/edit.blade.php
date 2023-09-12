@@ -1,6 +1,6 @@
 @extends('admin.master')
 @section('content')
-    <div class="col-md-6 grid-margin stretch-card">
+    <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Admin Manager</h4>
@@ -52,23 +52,6 @@
                         <input type="text" class="form-control" id="exampleInputMobile" placeholder="Mobile"
                             name="mobile" value="{{ $user->mobile }}">
                     </div>
-                    {{-- <div class="form-group">
-                        <label for="exampleInputPassword2">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password"
-                            name="password" value="{{ $user->password }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputRePassword2">Re Password</label>
-                        <input type="password" class="form-control" id="exampleInputRePassword2" placeholder="Re Password"
-                            name="repassword" value="{{ $user->password }}" readonly>
-                    </div> --}}
-
-
-                    {{-- <div class="form-check form-check-flat form-check-primary">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input"> Remember me
-                        </label>
-                    </div> --}}
                     <button type="submit" class="btn btn-primary">Update</button>
                     <button class="btn btn-light">Cancel</button>
                 </form>

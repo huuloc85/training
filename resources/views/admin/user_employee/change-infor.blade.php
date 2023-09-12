@@ -1,10 +1,10 @@
 @extends('admin.master')
 @section('content')
-    <div class="col-md-6 grid-margin stretch-card">
+    <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <h4 class="card-title">Admin Manager</h4>
-                <p class="card-description">Edit Employee</p>
+                <h4 class="card-title">Change Information Employee</h4>
+                {{-- <p class="card-description">Change Information Employee</p> --}}
                 @if (Session::has('success'))
                     <div class="alert alert-success" role="alert">
                         {{ Session::get('success') }}
@@ -15,7 +15,7 @@
                         {{ Session::get('error') }}
                     </div>
                 @endif
-                <form action="{{ route('updateInfor', ['id' => 1]) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('updateInfor', $user->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername">Username</label>
@@ -69,7 +69,7 @@
                             <input type="checkbox" class="form-check-input"> Remember me
                         </label>
                     </div> --}}
-                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="submit" class="btn btn-primary">Change</button>
                     <button class="btn btn-light">Cancel</button>
                 </form>
             </div>

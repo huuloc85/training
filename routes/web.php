@@ -3,6 +3,7 @@
 use App\Http\Controllers\admin\DashBoardController;
 use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\admin\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,7 +32,8 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
     Route::get('index', [DashBoardController::class, 'index'])->name('admin.index');
     Route::get('change-password', [UserController::class, 'showViewChangePassword'])->name('show-change-password');
     Route::post('change-password', [UserController::class, 'changePassword'])->name('change-password');
-
+    Route::get('changeInfor/{id}', [UserController::class, 'changeInfor'])->name('changeInfor');
+    Route::post('updateInfor/{id}', [UserController::class, 'updateInfor'])->name('updateInfor');
 
 
     //user routes
@@ -42,7 +44,13 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
         Route::delete('delete/{id}', [UserController::class, 'delete'])->name('user-delete');
         Route::get('edit/{id}', [UserController::class, 'edit'])->name('user-edit');
         Route::post('update/{id}', [UserController::class, 'update'])->name('user-update');
-        Route::get('changeInfor/{id}', [UserController::class, 'changeInfor'])->name('changeInfor');
-        Route::post('updateInfor/{id}', [UserController::class, 'updateInfor'])->name('updateInfor');
+    });
+    Route::prefix('category')->group(function () {
+        Route::get('list', [CategoryController::class, 'list'])->name('category-list');
+        Route::get('add', [CategoryController::class, 'add'])->name('category-add');
+        Route::post('save', [CategoryController::class, 'save'])->name('category-save');
+        Route::delete('delete/{id}', [CategoryController::class, 'delete'])->name('category-delete');
+        Route::get('edit/{catSlug}', [CategoryController::class, 'edit'])->name('category-edit');
+        Route::put('update/{catSlug}', [CategoryController::class, 'update'])->name('category-update');
     });
 });

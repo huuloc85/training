@@ -161,9 +161,59 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Email is not correct');
         }
     }
-    public function changInfor($id)
+    public function changeInfor($id)
     {
         $user = User::find($id);
         return view('admin.user_employee.change-infor', compact('user'));
+    }
+    public function updateInfor($id, Request $request)
+    {
+        // Find the user by ID
+        $user = User::find($id);
+
+        // Check if the user exists
+        if (!$user) {
+            return redirect()->back()->with('error', 'User not found');
+        }
+
+        // Update user information
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->username = $request->username;
+        $user->role = $request->role;
+        $user->mobile = $request->mobile;
+
+        $oldImg = $user->photo;
+        $file = $request->file('new_image');
+
+        if ($request->hasFile('new_image')) {
+            $fileExtension = $file->getClientOriginalName();
+            $fileName = time();
+            $newFileName = $fileName . '.' . $fileExtension;
+
+            $request->file('new_image')->storeAs('public/user', $newFileName);
+            $user->photo = $newFileName;
+
+            // Delete the old image if it exists
+            if ($oldImg) {
+                Storage::delete('public/user/' . $oldImg);
+            }
+        }
+
+        try {
+            $user->save();
+            return redirect()->back()->with('success', 'Change Information Successfully!');
+        } catch (\Exception $th) {
+            dd($th->getMessage());
+            // Log the exception for debugging
+
+            // Revert image change in case of an error
+            if ($request->hasFile('new_image')) {
+                $image = 'public/user/' . $newFileName;
+                Storage::delete($image);
+            }
+
+            return redirect()->back()->with('error', 'Change Information Failed!!!');
+        }
     }
 }

@@ -63,45 +63,47 @@ class CategoryController extends Controller
         $category = Category::where('catSlug', $catSlug)->first();
 
         if (!$category) {
-            return redirect()->back()->with('error', 'Category not found!');
+            return redirect()->route('category-list')->with('');
         }
 
         return view('admin.category.edit', compact('category'));
     }
 
+
     public function update($catSlug, Request $request)
     {
-        $category = Category::where('catSlug', $catSlug)->first();
-
-        if (!$category) {
-            return redirect()->back()->with('error', 'Category not found!');
-        }
-
-        // Kiểm tra nếu yêu cầu chứa tệp ảnh mới
-        if ($request->hasFile('new_image')) {
-            $file = $request->file('new_image');
-            $fileExtension = $file->getClientOriginalExtension();
-            $fileName = time();
-            $newFileName = $fileName . '.' . $fileExtension;
-            $file->storeAs('public/categoryImage', $newFileName);
-            $category->catImage = $newFileName;
-        }
-
-        // Gán giá trị cho các thuộc tính khác của danh mục
-        $category->catName = $request->catName;
-        $category->catSlug = $request->catSlug;
-
         try {
-            $category->save();
+            // Tìm danh mục bằng catSlug
+            $category = Category::where('catSlug', $catSlug)->firstOrFail();
 
-            return redirect()->back()->with('success', 'Category updated successfully!');
-        } catch (\Exception $th) {
+            // Kiểm tra nếu yêu cầu chứa tệp ảnh mới
             if ($request->hasFile('new_image')) {
-                $image = 'public/categoryImage/' . $newFileName;
-                Storage::delete($image);
+                // Xóa hình ảnh cũ (nếu có)
+                if ($category->catImage) {
+                    Storage::delete('public/categoryImage/' . $category->catImage);
+                }
+
+                $file = $request->file('new_image');
+                $fileExtension = $file->getClientOriginalExtension();
+                $fileName = time();
+                $newFileName = $fileName . '.' . $fileExtension;
+                $file->storeAs('public/categoryImage', $newFileName);
+                $category->catImage = $newFileName;
             }
 
-            return redirect()->back()->with('error', 'Category could not be updated!');
+            // Gán giá trị cho các thuộc tính khác của danh mục
+            $category->catName = $request->catName;
+            $category->catSlug = $request->catSlug;
+
+            $category->save();
+
+            return redirect()->route('category-list')->with('success', 'Category updated successfully!');
+        } catch (\Exception $th) {
+            // Trong trường hợp lưu cơ sở dữ liệu thất bại, hãy xóa hình ảnh mới (nếu có)
+            if ($request->hasFile('new_image')) {
+                Storage::delete('public/categoryImage/' . $newFileName);
+            }
+            return redirect()->route('category-list')->with('error', 'Category could not be updated!');
         }
     }
 }

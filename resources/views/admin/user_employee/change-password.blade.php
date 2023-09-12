@@ -29,10 +29,14 @@
                     <div class="col-lg-4 mx-auto">
                         <div class="auth-form-light text-left p-5">
                             <div class="brand-logo">
-                                <img src="admin/assets/images/logo-dark.svg">
+                                <img src="{{ asset('storage/user/' . Auth::user()->photo) }}" alt="img"
+                                    style="height: 100%; width: 100%;">
                             </div>
-                            <h4>Change Password</h4>
-                            <h6 class="font-weight-light">Enter your new password for {{ Auth::user()->email }}.</h6>
+                            <h4 class=" text-dark text-center display-4">Change Password</h4>
+
+                            <h6 class=" text-dark text-center display-5">Enter your new password for
+                                {{ Auth::user()->email }}.</h6>
+
                             <form class="pt-3" action="{{ route('change-password') }}" method="POST">
                                 @csrf
                                 @if (Session::has('error'))
@@ -76,10 +80,12 @@
                                         </span>
                                     @enderror
                                 </div>
-                                <button type="submit"
-                                    class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">
-                                    Change Password
-                                </button>
+                                <div class="text-center">
+                                    <button type="submit"
+                                        class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">
+                                        Change Password
+                                    </button>
+                                </div>
                             </form>
                         </div>
                     </div>

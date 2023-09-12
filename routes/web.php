@@ -32,8 +32,8 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
     Route::get('index', [DashBoardController::class, 'index'])->name('admin.index');
     Route::get('change-password', [UserController::class, 'showViewChangePassword'])->name('show-change-password');
     Route::post('change-password', [UserController::class, 'changePassword'])->name('change-password');
-    Route::get('changeInfor/{id}', [UserController::class, 'changeInfor'])->name('changeInfor');
-    Route::post('updateInfor/{id}', [UserController::class, 'updateInfor'])->name('updateInfor');
+    Route::get('changeInfor', [UserController::class, 'changeInfor'])->name('changeInfor');
+    Route::post('updateInfor', [UserController::class, 'updateInfor'])->name('updateInfor');
 
 
     //user routes

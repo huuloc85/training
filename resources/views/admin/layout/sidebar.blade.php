@@ -50,9 +50,9 @@
             </a>
             <div class="collapse" id="product-manager">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('product-add') }}">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a></li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Update</a>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('product-list') }}">List</a>
                     </li>
                 </ul>
             </div>
@@ -68,7 +68,7 @@
                 <ul class="nav flex-column sub-menu">
                     <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a></li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Update</a>
+                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">List</a>
                     </li>
                 </ul>
             </div>
@@ -85,43 +85,41 @@
                     <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a>
                     </li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">Update</a>
+                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">List</a>
                     </li>
                 </ul>
             </div>
         </li>
     </ul>
-    <li class="nav-item nav-profile dropdown">
-        <a class="nav-link dropdown-toggle" id="profileDropdown" href="#" data-bs-toggle="dropdown"
+    <li class="list-unstyled dropdown">
+        <a class="dropdown-item dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
             aria-expanded="false">
-            <div class="nav-profile-img">
-                <img src="{{ asset('storage/user/' . Auth::user()->photo) }}" alt="img"
-                    style="height: 50px; width: 50px;">
-            </div>
-            <div class="nav-profile-text">
-                <p class="mb-3 text-white">{{ Auth::user()->name }}</p> <!-- Hiển thị tên người đang đăng nhập -->
-            </div>
+            <i class="mdi mdi-settings"></i> <!-- Thêm biểu tượng Setting vào đây -->
+            Settings
         </a>
-        <div class="dropdown-menu navbar-dropdown dropdown-menu-right p-0 border-0 font-size-sm"
-            aria-labelledby="profileDropdown" data-x-placement="bottom-end">
-            <div class="p-1 text-center">
-                <img src="{{ asset('storage/user/' . Auth::user()->photo) }}" alt="img"
-                    style="height: 100%; width: 100%;">
-            </div>
-            <div class="p-1">
-                <a href="{{ route('changeInfor', Auth()->user()->id) }}" class="nav-link">
+        <ul class="dropdown-menu">
+            <h3 class="text-center">{{ Auth::user()->name }}</h3>
+
+            <!-- Các mục dropdown menu -->
+            <li class="list-unstyled">
+                <a class="dropdown-item" href="{{ route('changeInfor') }}">
                     <i class="mdi mdi-account"></i>
-                    <span class="menu-title">Change Information</span>
+                    Change Information
                 </a>
-                <a href="{{ route('show-change-password') }}" class="nav-link">
+            </li>
+            <li class="list-unstyled">
+                <a class="dropdown-item" href="{{ route('show-change-password') }}">
                     <i class="mdi mdi-lock"></i>
-                    <span class="menu-title">Change Password</span>
+                    Change Password
                 </a>
-                <a href="{{ route('adminLogout') }}" class="nav-link">
+            </li>
+            <li class="list-unstyled">
+                <a class="dropdown-item" href="{{ route('adminLogout') }}">
                     <i class="mdi mdi-logout"></i>
-                    <span class="menu-title">Log Out</span>
+                    Log Out
                 </a>
-            </div>
-        </div>
+            </li>
+        </ul>
     </li>
+
 </nav>

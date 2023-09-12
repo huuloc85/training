@@ -17,7 +17,7 @@ class CategoryController extends Controller
     }
     public function add()
     {
-        return view('admin.category.add');
+        return view('admin.category.add ');
     }
     public function save(Request $request)
     {
@@ -42,20 +42,6 @@ class CategoryController extends Controller
             Storage::delete($image);
             return redirect()->back()->with('error', 'An error occurred while adding category.');
         }
-    }
-
-    public function delete($id)
-    {
-        // check xem sản phẩm có thuộc danh mục hay không
-        $checkproduct = Product::where('category_id', $id)->first();
-        if ($checkproduct) {
-            return redirect()->back()->with('error', 'You can not delete this category because it is already have product.');
-        }
-        $category = Category::FindOrFail($id);
-        $image = 'public/categoryImage/' . $category->catImage;
-        Storage::delete($image);
-        $category->delete();
-        return redirect()->back()->with('success', 'Category deleted successfully!');
     }
 
     public function edit($catSlug)
@@ -105,5 +91,18 @@ class CategoryController extends Controller
             }
             return redirect()->route('category-list')->with('error', 'Category could not be updated!');
         }
+    }
+    public function delete($id)
+    {
+        // check xem sản phẩm có thuộc danh mục hay không
+        $checkproduct = Product::where('category_id', $id)->first();
+        if ($checkproduct) {
+            return redirect()->back()->with('error', 'You can not delete this category because it is already have product.');
+        }
+        $category = Category::FindOrFail($id);
+        $image = 'public/categoryImage/' . $category->catImage;
+        Storage::delete($image);
+        $category->delete();
+        return redirect()->back()->with('success', 'Category deleted successfully!');
     }
 }

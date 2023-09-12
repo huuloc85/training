@@ -161,4 +161,9 @@ class UserController extends Controller
             return redirect()->back()->with('error', 'Email is not correct');
         }
     }
+    public function changInfor($id)
+    {
+        $user = User::find($id);
+        return view('admin.user_employee.change-infor', compact('user'));
+    }
 }

@@ -91,41 +91,45 @@
             </div>
         </li>
         <li class="nav-item sidebar-user-actions">
-            <div class="user-details">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="d-flex align-items-center">
-                            <div class="sidebar-profile-img">
-                                <img src="admin/assets/images/faces/face28.png" alt="image">
-                            </div>
-                            <div class="sidebar-profile-text">
-                                <p class="mb-1">Henry Klein</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="badge badge-danger">3</div>
-                </div>
-            </div>
-        </li>
-        <li class="nav-item sidebar-user-actions">
             <div class="sidebar-user-menu">
-                <a href="{{ route('show-change-password') }}" class="nav-link"><i
-                        class="mdi mdi-settings menu-icon"></i>
+                <a href="#" class="nav-link"><i class="mdi mdi-settings menu-icon"></i>
                     <span class="menu-title">Settings</span>
                 </a>
+                <ul class="sub-menu" id="settings-sub-menu">
+                    <li class="nav-item">
+                        <a href="{{ route('changeInfor') }}" class="nav-link">
+                            <span class="menu-title">Change Information</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('show-change-password') }}" class="nav-link">
+                            <span class="menu-title">Change Password</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('adminLogout') }}" class="nav-link">
+                            <span class="menu-title">Log Out</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </li>
-        <li class="nav-item sidebar-user-actions">
-            <div class="sidebar-user-menu">
-                <a href="#" class="nav-link"><i class="mdi mdi-speedometer menu-icon"></i>
-                    <span class="menu-title">Take Tour</span></a>
-            </div>
-        </li>
-        <li class="nav-item sidebar-user-actions">
-            <div class="sidebar-user-menu">
-                <a href="{{ route('adminLogout') }}" class="nav-link"><i class="mdi mdi-logout menu-icon"></i>
-                    <span class="menu-title">Log Out</span></a>
-            </div>
-        </li>
+        <script>
+            var subMenu = document.getElementById('settings-sub-menu');
+            var menuItem = document.querySelector('.nav-item.sidebar-user-actions');
+
+            // Ẩn sub-menu ban đầu
+            subMenu.style.display = 'none';
+
+            // Hiển thị sub-menu khi rê chuột vào menuItem
+            menuItem.addEventListener('mouseenter', function() {
+                subMenu.style.display = 'block';
+            });
+
+            // Ẩn sub-menu khi di chuột ra khỏi menuItem
+            menuItem.addEventListener('mouseleave', function() {
+                subMenu.style.display = 'none';
+            });
+        </script>
     </ul>
 </nav>

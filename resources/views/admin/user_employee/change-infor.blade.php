@@ -15,7 +15,7 @@
                         {{ Session::get('error') }}
                     </div>
                 @endif
-                <form action="{{ route('user-update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('updateInfor', ['id' => 1]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername">Username</label>

@@ -52,7 +52,6 @@ class ProductController extends Controller
             $product->save();
             return redirect()->back()->with('success', 'Product added successfully!');
         } catch (\Exception $th) {
-            dd($th->getMessage());
             if (isset($product->proImage)) {
                 $imagePath = 'public/productImage/' . $product->proImage;
                 Storage::delete($imagePath);

@@ -15,7 +15,8 @@
                         {{ Session::get('error') }}
                     </div>
                 @endif
-                <form action="{{ route('user-update', $user->id) }}" method="POST" enctype="multipart/form-data">
+                <form id="updateUserForm" action="{{ route('user-update', $user->id) }}" method="POST"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername">Username</label>
@@ -41,12 +42,16 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputRole">Role</label>
-                        <select class="form-control" id="exampleInputRole" name="role">
-                            <option value="1">Admin</option>
-                            <option value="2" selected>Employee</option>
+                        <select class="form-control" id="exampleInputRole" name="role" readonly>
+                            <option value="1" @if ($user->role === 1) selected @endif>Admin</option>
+                            <option value="2" @if ($user->role === 2) selected @endif>Employee</option>
                         </select>
                     </div>
-
+                    <script>
+                        document.getElementById('exampleInputRole').onchange = function() {
+                            this.value = '{{ $user->role }}';
+                        };
+                    </script>
                     <div class="form-group">
                         <label for="exampleInputMobile">Mobile</label>
                         <input type="text" class="form-control" id="exampleInputMobile" placeholder="Mobile"
@@ -55,6 +60,8 @@
                     <button type="submit" class="btn btn-primary">Update</button>
                     <button class="btn btn-light">Cancel</button>
                 </form>
+
+
             </div>
         </div>
     </div>

@@ -58,13 +58,9 @@
                         <input type="password" class="form-control" id="exampleInputRePassword2" placeholder="Re Password"
                             name="repassword">
                     </div>
-                    <div class="form-check form-check-flat form-check-primary">
-                        <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input"> Remember me
-                        </label>
-                    </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
-                    <button class="btn btn-light">Cancel</button>
+                    <a href="{{ route('user-list') }}" class="btn btn-light">Back</a>
+
                 </form>
             </div>
         </div>

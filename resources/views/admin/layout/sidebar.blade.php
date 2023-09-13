@@ -66,9 +66,9 @@
             </a>
             <div class="collapse" id="customer-manager">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-add') }}">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a></li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">List</a>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-list') }}">List</a>
                     </li>
                 </ul>
             </div>
@@ -82,10 +82,10 @@
             </a>
             <div class="collapse" id="order-manager">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/buttons.html">Add</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-add') }}">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a>
                     </li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="pages/ui-features/typography.html">List</a>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-list') }}">List</a>
                     </li>
                 </ul>
             </div>

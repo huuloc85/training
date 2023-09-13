@@ -59,7 +59,6 @@ class UserController extends Controller
 
             return redirect()->route('user-add')->with('success', 'Successful Add Employee!!!');
         } catch (\Exception $th) {
-            dd($th->getMessage());
             // Xử lý lỗi và xóa hình ảnh nếu cần thiết
             if (isset($user->photo)) {
                 $image = 'public/user/' . $user->photo;
@@ -81,7 +80,6 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->username = $request->username;
-        $user->password = $request->password;
         $user->role = $request->role;
         $user->mobile = $request->mobile;
         $oldImg = $user->image;
@@ -103,7 +101,7 @@ class UserController extends Controller
             }
             return redirect()->back()->with('success', 'User updated successfully!');
         } catch (\Exception $th) {
-            dd($th);
+            dd($th->getMessage());
             if ($request->hasFile('new_image')) {
                 $image = 'public/user/' . $newFileName;
                 Storage::delete($image);
@@ -114,12 +112,27 @@ class UserController extends Controller
 
     public function delete($id)
     {
-        $user = User::findOrFail($id);
-        $image = 'public/user/' . $user->photo;
-        Storage::delete($image);
-        $user->delete();
-        return redirect()->back()->with('success', 'User delete successfully!');
+        // Kiểm tra xem người dùng có đăng nhập không
+        if (Auth::check()) {
+            // Lấy thông tin của người dùng đang cố gắng xóa
+            $userToDelete = User::findOrFail($id);
+
+            // Kiểm tra xem người dùng có vai trò là "Admin" (ví dụ: role là 1) hay không
+            if ($userToDelete->role === 1) {
+                // Nếu đang đăng nhập dưới tài khoản "Admin", hiển thị thông báo lỗi
+                return redirect()->back()->with('error', 'Admin users cannot be deleted.');
+            }
+            // Xóa tài khoản
+            $image = 'public/user/' . $userToDelete->photo;
+            Storage::delete($image);
+            $userToDelete->delete();
+            return response()->json(['message' => 'User deleted successfully']);
+        } else {
+            // Nếu không đăng nhập, chuyển hướng hoặc hiển thị thông báo lỗi
+            return redirect()->back()->with('error', 'You are not authorized to delete this user.');
+        }
     }
+
     public function showViewChangePassword()
     {
         // Đưa code để hiển thị view thay đổi mật khẩu ở đây

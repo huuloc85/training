@@ -5,6 +5,7 @@ use App\Http\Controllers\admin\AuthController;
 use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\ProductController;
+use App\Http\Controllers\admin\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -61,5 +62,13 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
         Route::delete('delete/{id}', [ProductController::class, 'delete'])->name('product-delete');
         Route::get('edit/{proSlug}', [ProductController::class, 'edit'])->name('product-edit');
         Route::put('update/{proSlug}', [ProductController::class, 'update'])->name('product-update');
+    });
+    Route::prefix('customer')->group(function () {
+        Route::get('list', [CustomerController::class, 'list'])->name('customer-list');
+        Route::get('add', [CustomerController::class, 'add'])->name('customer-add');
+        Route::post('save', [CustomerController::class, 'save'])->name('customer-save');
+        Route::delete('delete/{id}', [CustomerController::class, 'delete'])->name('customer-delete');
+        Route::get('edit/{id}', [CustomerController::class, 'edit'])->name('customer-edit');
+        Route::put('update/{id}', [CustomerController::class, 'update'])->name('customer-update');
     });
 });

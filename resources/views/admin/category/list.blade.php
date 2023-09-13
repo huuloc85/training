@@ -40,47 +40,56 @@
                                                 class="btn btn-primary">Edit</a>
 
                                             <!-- Delete Form -->
-                                            <a href="#" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#deleteModal{{ $category->id }}">Delete</a>
-                                            <div class="modal fade" id="deleteModal{{ $category->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="deleteModalLabel{{ $category->id }}"
-                                                aria-hidden="true">
-                                                <div class="modal-dialog" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title"
-                                                                id="deleteModalLabel{{ $category->id }}">
-                                                                Confirm Deletion</h5>
-                                                            <button type="button" class="close" data-dismiss="modal"
-                                                                aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to delete this category?
-                                                            </p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-dismiss="modal">Cancel</button>
-                                                            <form action="{{ route('category-delete', $category->id) }}"
-                                                                method="POST">
-                                                                @method('DELETE')
-                                                                @csrf
-                                                                <button type="submit"
-                                                                    class="btn btn-danger">Delete</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- End Modal -->
+                                            <a href="#" class="btn btn-danger"
+                                                onclick="deleteCategory({{ $category->id }})">Delete</a>
 
-                                            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+                                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                             <script>
-                                                $(document).ready(function() {});
+                                                function deleteCategory(categoryId) {
+                                                    Swal.fire({
+                                                        title: 'Confirm Deletion',
+                                                        text: 'Are you sure you want to delete this category?',
+                                                        icon: 'warning',
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: '#d33',
+                                                        cancelButtonColor: '#3085d6',
+                                                        confirmButtonText: 'Delete',
+                                                    }).then((result) => {
+                                                        if (result.isConfirmed) {
+                                                            // Send an AJAX request to delete the category
+                                                            $.ajax({
+                                                                url: "{{ route('category-delete', ':id') }}".replace(':id', categoryId),
+                                                                method: 'DELETE',
+                                                                data: {
+                                                                    _token: '{{ csrf_token() }}'
+                                                                },
+                                                                success: function(response) {
+                                                                    Swal.fire({
+                                                                        icon: 'success',
+                                                                        title: 'Success',
+                                                                        text: response.message,
+                                                                    }).then((result) => {
+                                                                        if (result.isConfirmed) {
+                                                                            // Redirect or perform an action after successful deletion
+                                                                            window.location.href = "{{ route('category-list') }}";
+                                                                        }
+                                                                    });
+                                                                },
+                                                                error: function(xhr) {
+                                                                    Swal.fire({
+                                                                        icon: 'error',
+                                                                        title: 'Oops...',
+                                                                        text: 'Something went wrong!',
+                                                                        footer: '<a href="#">Why do I have this issue?</a>',
+                                                                    });
+                                                                },
+                                                            });
+                                                        }
+                                                    });
+                                                }
                                             </script>
+
+
                                         </td>
                                     </tr>
                                 @endforeach

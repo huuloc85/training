@@ -40,7 +40,20 @@
                                         <td>{{ $order->created_at }}</td>
                                         <td>{{ number_format($order->total) }} VND</td>
                                         <td>{{ $order->note }}</td>
-                                        <td>{{ $order->status }}</td>
+                                        <td>
+                                            <style>
+                                                .custom-badge {
+                                                    font-size: 15px;
+                                                    /* Điều chỉnh kích thước phù hợp với yêu cầu của bạn */
+                                                    padding: 10px 20px;
+                                                    /* Điều chỉnh lề nếu cần thiết */
+                                                }
+                                            </style>
+                                            <span
+                                                class="badge  custom-badge  {{ $order->status === 'Đã nhận đơn' ? 'bg-danger' : 'bg-success' }}">
+                                                {{ $order->status }}
+                                            </span>
+                                        </td>
                                         <td>
                                             <a href="{{ route('order-detail', $order->id) }}"
                                                 class="btn btn-primary">Show</a>

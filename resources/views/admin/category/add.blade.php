@@ -9,7 +9,7 @@
                         {{ Session::get('success') }}
                     </div>
                 @endif
-                <form id="categoryForm" action="{{ route('category-save') }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('category-save') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="catName">Category Name</label>

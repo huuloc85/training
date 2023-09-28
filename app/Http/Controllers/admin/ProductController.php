@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProductSaveRequest;
+use App\Http\Requests\ProductUpdateRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -24,7 +26,7 @@ class ProductController extends Controller
         return view('admin.product.add', compact('cat'));
     }
 
-    public function save(Request $request)
+    public function save(ProductSaveRequest $request)
     {
         $product = new Product();
         $product->proName = $request->proName;
@@ -52,6 +54,7 @@ class ProductController extends Controller
             $product->save();
             return redirect()->back()->with('success', 'Product added successfully!');
         } catch (\Exception $th) {
+            dd($th->getMessage());
             if (isset($product->proImage)) {
                 $imagePath = 'public/productImage/' . $product->proImage;
                 Storage::delete($imagePath);
@@ -72,7 +75,7 @@ class ProductController extends Controller
         return view('admin.product.edit', compact('pro', 'cat'));
     }
 
-    public function update(Request $request, $proSlug)
+    public function update(ProductUpdateRequest $request, $proSlug)
     {
         try {
             // Tìm sản phẩm bằng proSlug

@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateInforRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 
 use App\Jobs\SendEmployeeRegistrationEmail;
@@ -11,7 +15,6 @@ use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Spatie\LaravelIgnition\Recorders\DumpRecorder\Dump;
 
 class UserController extends Controller
 {
@@ -24,7 +27,7 @@ class UserController extends Controller
     {
         return view('admin.user_employee.add');
     }
-    public function save(Request $request)
+    public function save(CreateUserRequest $request)
     {
         try {
             $user = new User();
@@ -74,82 +77,72 @@ class UserController extends Controller
         return view('admin.user_employee.edit', compact('user'));
     }
 
-    public function update($id, Request $request)
+    public function update($id, UpdateUserRequest $request)
     {
+        // Đảm bảo bạn sử dụng đúng tên trường trong request để cập nhật thông tin người dùng
         $user = User::find($id);
         $user->name = $request->name;
         $user->email = $request->email;
         $user->username = $request->username;
+
+        // Kiểm tra xem mật khẩu mới đã được nhập và hash nó
+        if ($request->has('password')) {
+            $user->password = bcrypt($request->password);
+        }
+
         $user->role = $request->role;
         $user->mobile = $request->mobile;
         $oldImg = $user->image;
-        $file = $request->new_image;
+
         if ($request->hasFile('new_image')) {
-            $fileExtension = $file->getClientOriginalName();
-            $fileName = time(); // Tạo tên file dựa trên thời gian
-            $newFileName = $fileName . '.' . $fileExtension; // Tên file mới
-            //Lưu file vào thư mục storage/app/public/image với tên mới
+            $fileExtension = $request->file('new_image')->getClientOriginalExtension();
+            $fileName = time();
+            $newFileName = $fileName . '.' . $fileExtension;
             $request->file('new_image')->storeAs('public/user', $newFileName);
-            // Gán trường image của đối tượng task với tên mới
-            $user->photo = $newFileName;
+            $user->image = $newFileName;
         }
-        try {
-            $user->save();
-            if ($request->hasFile('new_image')) {
-                $image = 'public/user/' . $oldImg;
-                Storage::delete($image);
-            }
+
+        $updateSuccess = $user->save();
+
+        // Xóa hình ảnh cũ nếu có
+        if ($updateSuccess && $request->hasFile('new_image')) {
+            Storage::delete('public/user/' . $oldImg);
+        }
+
+        if ($updateSuccess) {
             return redirect()->back()->with('success', 'User updated successfully!');
-        } catch (\Exception $th) {
-            dd($th->getMessage());
+        } else {
+            // Xử lý lỗi khi cập nhật không thành công
             if ($request->hasFile('new_image')) {
-                $image = 'public/user/' . $newFileName;
-                Storage::delete($image);
+                // Nếu có lỗi, xóa hình ảnh mới nếu đã tải lên
+                Storage::delete('public/user/' . $newFileName);
             }
-            return redirect()->back()->with('error', 'User updated failed!!!');
+            return redirect()->back()->with('error', 'User update failed!!!');
         }
     }
+
+
 
     public function delete($id)
     {
-        // Kiểm tra xem người dùng có đăng nhập không
-        if (Auth::check()) {
-            // Lấy thông tin của người dùng đang cố gắng xóa
-            $userToDelete = User::findOrFail($id);
-
-            // Kiểm tra xem người dùng có vai trò là "Admin" (ví dụ: role là 1) hay không
-            if ($userToDelete->role === 1) {
-                // Nếu đang đăng nhập dưới tài khoản "Admin", hiển thị thông báo lỗi
-                return redirect()->back()->with('error', 'Admin users cannot be deleted.');
-            }
-            // Xóa tài khoản
-            $image = 'public/user/' . $userToDelete->photo;
-            Storage::delete($image);
-            $userToDelete->delete();
-            return response()->json(['message' => 'User deleted successfully']);
-        } else {
-            // Nếu không đăng nhập, chuyển hướng hoặc hiển thị thông báo lỗi
-            return redirect()->back()->with('error', 'You are not authorized to delete this user.');
-        }
+        $user = User::findOrFail($id);
+        $image = 'public/user/' . $user->photo;
+        Storage::delete($image);
+        $user->delete();
+        return redirect()->back()->with('success', 'User delete successfully!');
     }
-
     public function showViewChangePassword()
     {
         // Đưa code để hiển thị view thay đổi mật khẩu ở đây
         return view('admin.user_employee.change-password');
     }
 
-    public function changePassword(Request $request)
+    public function changePassword(ChangePasswordRequest $request)
     {
         // Lấy email của người dùng đang đăng nhập
         $email = Auth::user()->email;
 
         // Kiểm tra xác thực
-        $request->validate([
-            'old_password' => 'required',
-            'new_password' => 'required|min:6',
-            'new_password_confirmation' => 'required|same:new_password',
-        ]);
 
         // Lấy thông tin từ biểu mẫu
         $oldPassword = $request->old_password;
@@ -180,7 +173,7 @@ class UserController extends Controller
         // Hiển thị trang thay đổi thông tin với thông tin người dùng
         return view('admin.user_employee.change-infor', compact('user'));
     }
-    public function updateInfor(Request $request)
+    public function updateInfor(UpdateInforRequest $request)
     {
         // Lấy ID người dùng hiện tại
         $userId = Auth::id();
@@ -230,7 +223,7 @@ class UserController extends Controller
             return redirect()->back()->with('success', 'Change Information Successfully!');
         } catch (\Exception $th) {
             // Xử lý lỗi (log và thực hiện các hành động cần thiết)
-
+            dd($th->getMessage());
             // Đảo ngược thay đổi ảnh nếu có lỗi
             if ($request->hasFile('new_image')) {
                 $image = 'public/user/' . $newFileName;

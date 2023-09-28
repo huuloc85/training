@@ -33,10 +33,11 @@
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
                                         <td>{{ $customer->name }}</td>
-                                        <td>(+84) {{ substr_replace($customer->mobile, ' ', 3, 0) }}</td>
+                                        <td>(+84) {{ substr(chunk_split(ltrim($customer->mobile, '0'), 3, ' '), 0, -1) }}
+                                        </td>
                                         <td>{{ $customer->email }}</td>
                                         <td>{{ $customer->address }}</td>
-                                        <td>{{ $customer->total_amount }}</td>
+                                        <td>{{ number_format($customer->total) }}</td>
                                         <td>
                                             <a href="{{ route('customer-edit', $customer->id) }}"
                                                 class="btn btn-primary">Edit</a>

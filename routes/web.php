@@ -6,6 +6,7 @@ use App\Http\Controllers\admin\UserController;
 use App\Http\Controllers\admin\CategoryController;
 use App\Http\Controllers\admin\ProductController;
 use App\Http\Controllers\admin\CustomerController;
+use App\Http\Controllers\admin\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,5 +71,15 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
         Route::delete('delete/{id}', [CustomerController::class, 'delete'])->name('customer-delete');
         Route::get('edit/{id}', [CustomerController::class, 'edit'])->name('customer-edit');
         Route::put('update/{id}', [CustomerController::class, 'update'])->name('customer-update');
+    });
+    Route::prefix('order')->group(function () {
+        Route::get('list', [OrderController::class, 'list'])->name('order-list');
+        Route::get('add', [OrderController::class, 'add'])->name('order-add');
+        Route::post('save', [OrderController::class, 'save'])->name('order-save');
+        Route::delete('delete/{id}', [OrderController::class, 'delete'])->name('order-delete');
+        Route::get('edit/{id}', [OrderController::class, 'edit'])->name('order-edit');
+        Route::put('update/{id}', [OrderController::class, 'update'])->name('order-update');
+        Route::get('show-detail/{id}', [OrderController::class, 'show'])->name('order-detail');
+        Route::post('approve-all-orders', [OrderController::class, 'approveAllOrders'])->name('approve-all-orders');
     });
 });

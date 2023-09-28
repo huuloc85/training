@@ -4,17 +4,6 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">User List</h4>
-                @if (Session::has('error'))
-                    <div class="alert alert-danger" role="alert">
-                        {{ Session::get('error') }}
-                    </div>
-                @endif
-
-                @if (Session::has('success'))
-                    <div class="alert alert-success" role="alert">
-                        {{ Session::get('success') }}
-                    </div>
-                @endif
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>
@@ -44,63 +33,50 @@
                                             Employee
                                         @endif
                                     </td>
-                                    <td>(+84) {{ substr_replace($user->mobile, ' ', 3, 0) }}</td>
-
+                                    <td>{{ $user->mobile }}</td>
                                     <td><img src="{{ asset('storage/user/' . $user->photo) }}"
                                             style="height: 100px; width: 100px;">
                                     </td>
                                     <td>
                                         <a href="{{ route('user-edit', $user->id) }}" class="btn btn-primary">Edit</a>
-                                        <a href="#" class="btn btn-danger"
-                                            onclick="deleteUser({{ $user->id }})">Delete</a>
-                                        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                        <a href="#" class="btn btn-danger" data-toggle="modal"
+                                            data-target="#deleteModal{{ $user->id }}">Delete</a>
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1"
+                                            role="dialog" aria-labelledby="deleteModalLabel{{ $user->id }}"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="deleteModalLabel{{ $user->id }}">
+                                                            Confirm Deletion</h5>
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Are you sure you want to delete this product?
+                                                        </p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Cancel</button>
+                                                        <form action="{{ route('user-delete', $user->id) }}"
+                                                            method="POST">
+                                                            @method('DELETE')
+                                                            @csrf
+                                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
                                         <script>
-                                            function deleteUser(userId) {
-                                                Swal.fire({
-                                                    title: 'Confirm Deletion',
-                                                    text: 'Are you sure you want to delete this user?',
-                                                    icon: 'warning',
-                                                    showCancelButton: true,
-                                                    confirmButtonColor: '#d33',
-                                                    cancelButtonColor: '#3085d6',
-                                                    confirmButtonText: 'Delete',
-                                                }).then((result) => {
-                                                    if (result.isConfirmed) {
-                                                        // Gửi yêu cầu AJAX để xóa người dùng
-                                                        $.ajax({
-                                                            url: "{{ route('user-delete', ':id') }}".replace(':id', userId),
-                                                            method: 'DELETE',
-                                                            data: {
-                                                                _token: '{{ csrf_token() }}'
-                                                            },
-
-                                                            success: function(response) {
-                                                                Swal.fire({
-                                                                    icon: 'success',
-                                                                    title: 'Success',
-                                                                    text: response.message,
-                                                                }).then((result) => {
-                                                                    if (result.isConfirmed) {
-                                                                        // Chuyển hướng hoặc thực hiện hành động sau khi xử lý thành công
-                                                                        window.location.href = "{{ route('user-list') }}";
-                                                                    }
-                                                                });
-                                                            },
-                                                            error: function(xhr) {
-                                                                // Xử lý lỗi và hiển thị thông báo
-                                                                Swal.fire({
-                                                                    icon: 'error',
-                                                                    title: 'Oops...',
-                                                                    text: 'Something went wrong!',
-                                                                    footer: '<a href="#">Why do I have this issue?</a>'
-                                                                });
-                                                            }
-                                                        });
-                                                    }
-                                                });
-                                            }
+                                            $(document).ready(function() {});
                                         </script>
-
                                     </td>
                                 </tr>
                             @endforeach

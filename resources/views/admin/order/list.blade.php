@@ -5,7 +5,7 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h3 class="card-title">Category List</h3>
+                        <h3 class="card-title">Order List</h3>
                         @if (Session::has('error'))
                             <div class="alert alert-danger" role="alert">
                                 {{ Session::get('error') }}
@@ -19,37 +19,43 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th>Category ID</th>
-                                    <th>Category Name</th>
-                                    <th>Category Slug</th>
-                                    <th>Category Image</th>
+                                    <th>Order ID</th>
+                                    <th>Customer Name</th>
+                                    <th>Customer Email</th>
+                                    <th>Customer Phone</th>
+                                    <th>Date</th>
+                                    <th>Total Amount</th>
+                                    <th>Note</th>
+                                    <th>Status</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($categories as $key => $category)
+                                @foreach ($orders as $key => $order)
                                     <tr>
                                         <td>{{ $key + 1 }}</td>
-                                        <td>{{ $category->catName }}</td>
-                                        <td>{{ $category->catSlug }}</td>
-                                        <td><img src="{{ asset('storage/categoryImage/' . $category->catImage) }}"
-                                                style="height: 100px; width: 100px;">
-                                        </td>
+                                        <td>{{ $order->customer->name }}</td>
+                                        <td>{{ $order->customer->email }}</td>
+                                        <td>{{ $order->customer->mobile }}</td>
+                                        <td>{{ $order->created_at }}</td>
+                                        <td>{{ number_format($order->total) }} VND</td>
+                                        <td>{{ $order->note }}</td>
+                                        <td>{{ $order->status }}</td>
                                         <td>
-                                            <a href="{{ route('category-edit', $category->catSlug) }}"
-                                                class="btn btn-primary">Edit</a>
+                                            <a href="{{ route('order-detail', $order->id) }}"
+                                                class="btn btn-primary">Show</a>
 
                                             <!-- Delete Form -->
                                             <a href="#" class="btn btn-danger" data-toggle="modal"
-                                                data-target="#deleteModal{{ $category->id }}">Delete</a>
-                                            <div class="modal fade" id="deleteModal{{ $category->id }}" tabindex="-1"
-                                                role="dialog" aria-labelledby="deleteModalLabel{{ $category->id }}"
+                                                data-target="#deleteModal{{ $order->id }}">Delete</a>
+                                            <div class="modal fade" id="deleteModal{{ $order->id }}" tabindex="-1"
+                                                role="dialog" aria-labelledby="deleteModalLabel{{ $order->id }}"
                                                 aria-hidden="true">
                                                 <div class="modal-dialog" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title"
-                                                                id="deleteModalLabel{{ $category->id }}">
+                                                                id="deleteModalLabel{{ $order->id }}">
                                                                 Confirm Deletion</h5>
                                                             <button type="button" class="close" data-dismiss="modal"
                                                                 aria-label="Close">
@@ -57,13 +63,12 @@
                                                             </button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <p>Are you sure you want to delete this category?
-                                                            </p>
+                                                            <p>Are you sure you want to delete this order?</p>
                                                         </div>
                                                         <div class="modal-footer">
                                                             <button type="button" class="btn btn-secondary"
                                                                 data-dismiss="modal">Cancel</button>
-                                                            <form action="{{ route('category-delete', $category->id) }}"
+                                                            <form action="{{ route('order-delete', $order->id) }}"
                                                                 method="POST">
                                                                 @method('DELETE')
                                                                 @csrf
@@ -86,9 +91,6 @@
                                 @endforeach
                             </tbody>
                         </table>
-                        {{-- <div style="float: right; margin:20px">
-                            {{ $categories->appends(request()->all())->links() }}
-                        </div> --}}
                     </div>
                 </div>
             </div>

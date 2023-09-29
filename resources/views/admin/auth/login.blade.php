@@ -39,19 +39,25 @@
                                         {{ Session::get('error') }}
                                     </div>
                                 @endif
-                                @if (Session::has('success'))
+                                {{-- @if (Session::has('success'))
                                     <div class="alert alert-success">
                                         {{ Session::get('success') }}
                                     </div>
-                                @endif
+                                @endif --}}
                                 @csrf
                                 <div class="form-group">
                                     <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                        name="email" placeholder="Email">
+                                        name="email" placeholder="Email" value="{{ old('email') }}">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <input type="password" class="form-control form-control-lg"
                                         id="exampleInputPassword1" name="password" placeholder="Password">
+                                    @error('password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <button type="submit"
                                     class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">

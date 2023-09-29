@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerStoreRequest;
 use App\Http\Requests\CustomerUpdateRequest;
 use App\Models\Customer;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -14,6 +15,11 @@ class CustomerController extends Controller
     {
         // Lấy danh sách khách hàng từ CSDL và trả về view để hiển thị
         $customers = Customer::all();
+        // Tính tổng total của tất cả các đơn hàng của từng khách hàng và truyền nó vào view
+        foreach ($customers as $customer) {
+            $totalAmount = Order::where('customer_id', $customer->id)->sum('total');
+            $customer->total = $totalAmount;
+        }
         return view('admin.customer.list', compact('customers'));
     }
 

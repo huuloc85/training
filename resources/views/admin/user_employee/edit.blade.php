@@ -20,25 +20,38 @@
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername">Username</label>
-                        <input type="text" class="form-control" id="exampleInputUsername" placeholder="Username"
-                            name="username" value="{{ $user->username }}">
+                        <input type="text" class="form-control @error('username') is-invalid @enderror"
+                            id="exampleInputUsername" placeholder="Username" name="username" value="{{ $user->username }}">
+                        @error('username')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="exampleInputName">Name</label>
-                        <input type="text" class="form-control" id="exampleInputName" placeholder="Name" name="name"
-                            value="{{ $user->name }}">
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="exampleInputName"
+                            placeholder="Name" name="name" value="{{ $user->name }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="image">Upload Image Employee:</label>
                         <input type="hidden" value="{{ $user->photo }}" id="old_image" name="old_image"><br>
                         <img src="{{ asset('storage/user/' . $user->photo) }}" style="height: 100px; width: 100px;">
-                        <input type="file" class="form-control" id="new_image" name="new_image">
+                        <input type="file" class="form-control @error('new_image') is-invalid @enderror" id="new_image"
+                            name="new_image">
+                        @error('new_image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="exampleInputEmail">Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail" placeholder="Email" name="email"
-                            value="{{ $user->email }}">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            id="exampleInputEmail" placeholder="Email" name="email" value="{{ $user->email }}">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="exampleInputRole">Role</label>
@@ -54,14 +67,15 @@
                     </script>
                     <div class="form-group">
                         <label for="exampleInputMobile">Mobile</label>
-                        <input type="text" class="form-control" id="exampleInputMobile" placeholder="Mobile"
-                            name="mobile" value="{{ $user->mobile }}">
+                        <input type="text" class="form-control @error('mobile') is-invalid @enderror"
+                            id="exampleInputMobile" placeholder="Mobile" name="mobile" value="{{ $user->mobile }}">
+                        @error('mobile')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
-                    <button class="btn btn-light">Cancel</button>
+                    <a href="{{ route('user-list') }}" class="btn btn-light">Cancel</a>
                 </form>
-
-
             </div>
         </div>
     </div>

@@ -82,10 +82,10 @@
             </a>
             <div class="collapse" id="order-manager">
                 <ul class="nav flex-column sub-menu">
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-add') }}">Add</a></li>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('order-add') }}">Add</a></li>
                     {{-- <li class="nav-item"> <a class="nav-link" href="pages/ui-features/dropdowns.html">Edit</a>
                     </li> --}}
-                    <li class="nav-item"> <a class="nav-link" href="{{ route('customer-list') }}">List</a>
+                    <li class="nav-item"> <a class="nav-link" href="{{ route('order-list') }}">List</a>
                     </li>
                 </ul>
             </div>

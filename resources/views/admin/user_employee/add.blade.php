@@ -19,48 +19,73 @@
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputUsername">Username</label>
-                        <input type="text" class="form-control" id="exampleInputUsername" placeholder="Username"
-                            name="username">
+                        <input type="text" class="form-control @error('username') is-invalid @enderror"
+                            id="exampleInputUsername" placeholder="Username" name="username" value="{{ old('username') }}">
+                        @error('username')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="exampleInputName">Name</label>
-                        <input type="text" class="form-control" id="exampleInputName" placeholder="Name" name="name">
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="exampleInputName"
+                            placeholder="Name" name="name" value="{{ old('name') }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="image">Upload Image Employee</label>
-                        <input type="file" class="form-control" id="image" name="image" required>
+                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image"
+                            name="image" required>
+                        @error('image')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="exampleInputEmail">Email</label>
-                        <input type="email" class="form-control" id="exampleInputEmail" placeholder="Email"
-                            name="email">
+                        <input type="email" class="form-control @error('email') is-invalid @enderror"
+                            id="exampleInputEmail" placeholder="Email" name="email" value="{{ old('email') }}">
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
                         <label for="exampleInputRole">Role</label>
-                        <select class="form-control" id="exampleInputRole" name="role">
-                            <option value="1">Admin</option>
-                            <option value="2" selected>Employee</option>
+                        <select class="form-control @error('role') is-invalid @enderror" id="exampleInputRole"
+                            name="role">
+                            <option value="1" {{ old('role') == 1 ? 'selected' : '' }}>Admin</option>
+                            <option value="2" {{ old('role') == 2 ? 'selected' : '' }}>Employee</option>
                         </select>
+                        @error('role')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
                     <div class="form-group">
                         <label for="exampleInputMobile">Mobile</label>
-                        <input type="text" class="form-control" id="exampleInputMobile" placeholder="Mobile"
-                            name="mobile">
+                        <input type="text" class="form-control @error('mobile') is-invalid @enderror"
+                            id="exampleInputMobile" placeholder="Mobile" name="mobile" value="{{ old('mobile') }}">
+                        @error('mobile')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword2">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword2" placeholder="Password"
-                            name="password">
+                        <input type="password" class="form-control form-control-lg @error('password') is-invalid @enderror"
+                            id="exampleInputPassword1" name="password" placeholder="Password">
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="form-group">
-                        <label for="exampleInputPassword2">Re Password</label>
-                        <input type="password" class="form-control" id="exampleInputRePassword2" placeholder="Re Password"
-                            name="repassword">
+                        <input type="password"
+                            class="form-control form-control-lg @error('password_confirmation') is-invalid @enderror"
+                            id="password_confirmation" name="password_confirmation" placeholder="Confirm Password">
+                        @error('password_confirmation')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">Submit</button>
                     <a href="{{ route('user-list') }}" class="btn btn-light">Back</a>
-
                 </form>
             </div>
         </div>

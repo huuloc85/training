@@ -16,7 +16,6 @@ return new class extends Migration
             $table->unsignedBigInteger('customer_id');
             $table->foreign('customer_id')->references('id')->on('customers');
             $table->BigInteger('total');
-            $table->dateTimeTz('date_at');
             $table->string('note')->nullable();
             $table->string('status');
             $table->timestamps();

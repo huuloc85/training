@@ -32,4 +32,8 @@ class Order extends Model
         }
         return $query;
     }
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetail::class);
+    }
 }

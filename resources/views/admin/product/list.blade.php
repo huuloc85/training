@@ -30,6 +30,7 @@
                                         <th>Price</th>
                                         <th>Quantity</th>
                                         <th>Image</th>
+                                        {{-- <th>Photo Detail</th> --}}
                                         <th>Details</th>
                                         <th>Category</th>
                                         <th>Added By</th>
@@ -47,6 +48,14 @@
                                             <td>{{ $product->proQuantity }}</td>
                                             <td><img src="{{ asset('storage/productImage/' . $product->proImage) }}"
                                                     style="height: 100px; width: 100px;"></td>
+                                            {{-- photo detail --}}
+                                            {{-- <td>
+                                                @foreach ($product->photoDetails as $photoDetail)
+                                                    <img src="{{ asset('storage/productImageDetails/' . $photoDetail->photos) }}"
+                                                        style="height: 100px; width: 100px;">
+                                                @endforeach
+                                            </td> --}}
+
                                             <td>{{ $product->proDetail }}</td>
                                             <td>{{ $product->category->catName }}</td>
                                             <td>

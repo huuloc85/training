@@ -80,6 +80,6 @@ Route::prefix('admin')->middleware(['isLoggedIn'])->group(function () {
         Route::get('edit/{id}', [OrderController::class, 'edit'])->name('order-edit');
         Route::put('update/{id}', [OrderController::class, 'update'])->name('order-update');
         Route::get('show-detail/{id}', [OrderController::class, 'show'])->name('order-detail');
-        Route::post('approve-all-orders', [OrderController::class, 'approveAllOrders'])->name('approve-all-orders');
+        Route::post('approve-order/{id}', [OrderController::class, 'approveOrder'])->name('approve-order');
     });
 });

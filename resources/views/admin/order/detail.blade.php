@@ -36,82 +36,78 @@
                 </div>
             </div>
         </div>
-
-
-        <div class="row" id="orderStatus">
-            <div class="col-md-12">
-                <table class="table">
-                    <tbody>
-                        @foreach ($orderDetail as $order)
-                            <tr>
-                                <td> Tình trạng đơn hàng: {{ $order->order->status }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="approveAllOrders">
-                    <button class="btn btn-success" data-order-received="true">Duyệt tất cả đơn hàng đã nhận đơn</button>
+        @foreach ($orderDetail as $order)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            @if ($order->order->status != 'Đã duyệt đơn')
+                                <button class="btn btn-success approve-order text-uppercase"
+                                    data-order-id="{{ $order->id }}">Duyệt đơn
+                                    hàng</button>
+                            @endif
+                            <div class="order-status mt-3">
+                                <div class="status" id="status-{{ $order->id }}">
+                                    @if ($order->order->status == 'Đã nhận đơn')
+                                        <p class="h3 font-weight-bold text-primary text-uppercase">Tình trạng đơn hàng: Đã
+                                            nhận đơn</p>
+                                    @elseif ($order->order->status == 'Đã duyệt đơn')
+                                        <p class="h3 font-weight-bold text-success text-uppercase">Tình trạng đơn hàng: Đã
+                                            duyệt đơn</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Div để hiển thị trạng thái duyệt đơn -->
-        <div class="row">
-            <div class="col-md-12">
-                <div id="overallStatus" class="mt-3"></div>
-            </div>
-        </div>
+        @endforeach
+
+
+
+        <!-- Đoạn mã JavaScript -->
         <script>
             $(document).ready(function() {
-                $('#approveAllOrders').click(function() {
-                    // Gửi Ajax request để duyệt tất cả đơn hàng đã nhận đơn
+                $('.approve-order').click(function() {
+                    var orderId = $(this).data('order-id');
+                    var approveOrderUrl = "/admin/order/approve-order/" + orderId;
+
                     $.ajax({
-                        url: "{{ route('approve-all-orders') }}", // Đặt URL tương ứng với route của bạn
+                        url: approveOrderUrl,
                         method: 'POST',
                         data: {
-                            _token: "{{ csrf_token() }}"
+                            _token: "{{ csrf_token() }}",
+                            order_id: orderId
                         },
                         success: function(response) {
                             console.log('AJAX request successful');
-                            {
-                                // Lấy giá trị trạng thái từ biến PHP và truyền vào JavaScript
-                                // var orderStatus = "{{ $order->status }}";
+                            var newStatus = response.status;
+                            var statusElement = $('#status-' + orderId);
 
-                                // Cập nhật trạng thái đơn hàng thành "Đã duyệt đơn"
-                                updateOrderStatus("Đã duyệt đơn");
-
-                                // Cập nhật trạng thái duyệt đơn tổng quan
-                                $('#overallStatus').html(
-                                    '<p class="text-success">Tất cả đơn hàng đã được duyệt</p>');
-                                $('#approveAllOrders').hide();
+                            if (newStatus === 'Đã duyệt đơn') {
+                                statusElement.html(
+                                    '<p class="h3 font-weight-bold text-success text-uppercase">Tình trạng đơn hàng: ' +
+                                    newStatus + '</p>');
+                                $('.order[data-order-id="' + orderId + '"] .approve-order').hide();
+                            } else {
+                                statusElement.html(
+                                    '<p class="h3 font-weight-bold text-success text-danger">Lỗi khi duyệt đơn hàng</p>'
+                                );
                             }
                         },
                         error: function(error) {
                             console.log(error);
-                            alert('Lỗi khi duyệt đơn hàng');
+                            var statusElement = $('#status-' + orderId);
+                            statusElement.html(
+                                '<p class="font-weight-bold text-danger">Lỗi khi duyệt đơn hàng</p>'
+                            );
                         }
                     });
                 });
-                @foreach ($orderDetail as $order)
-                    var orderStatus = "{{ $order->order->status }}";
-                    if (orderStatus == "Đã nhận đơn") {
-                        $("#orderStatus").show(); // Hiển thị div nếu đã nhận đơn
-                        $("#approveAllOrders").show(); // Hiển thị button nếu đã nhận đơn
-                    } else if (orderStatus == "Đã duyệt đơn") {
-                        $("#orderStatus").hide(); // Ẩn div nếu đã duyệt đơn
-                        $("#approveAllOrders").hide(); // Ẩn button nếu đã duyệt đơn
-                    }
-                @endforeach
-                // Hàm để cập nhật trạng thái đơn hàng
-                function updateOrderStatus(newStatus) {
-                    var orderStatusElement = $('#orderStatus');
-                    orderStatusElement.html('<p class="text-success">Tình trạng đơn hàng: ' + newStatus + '</p>');
-                }
             });
         </script>
+
+
     </div>
     <div class="row">
         <div class="col-md-12 d-flex justify-content-center align-items-center">

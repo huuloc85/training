@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendOrderApprovalEmail;
+use App\Mail\OrderApproved;
 use App\Models\Product;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -86,23 +89,35 @@ class OrderController extends Controller
 
         return redirect()->route('order-list')->with('success', 'Order deleted successfully!');
     }
-    public function approveAllOrders(Request $request)
+
+    public function approveOrder($id)
     {
-        try {
-            // Lấy tất cả các đơn hàng đã nhận đơn
-            $orders = Order::where('status', 'Đã nhận đơn')->get();
+        // Xử lý duyệt đơn hàng
+        $order = Order::find($id);
 
-            // Duyệt qua từng đơn hàng và cập nhật trạng thái thành "Đã duyệt đơn"
-            foreach ($orders as $order) {
-                $order->status = 'Đã duyệt đơn'; // Cập nhật giá trị cột status
-                $order->save(); // Lưu thay đổi vào cơ sở dữ liệu
-            }
-
-            // Trả về phản hồi JSON trống
-            return response()->json([], 200);
-        } catch (\Exception $e) {
-            // Xử lý lỗi nếu có
-            return response()->json([], 500);
+        if (!$order) {
+            // Xử lý trường hợp không tìm thấy đơn hàng
+            return response()->json(['status' => 'Lỗi', 'message' => 'Không tìm thấy đơn hàng.']);
         }
+
+        // Kiểm tra trạng thái đơn hàng đã duyệt
+        if ($order->status === 'Đã duyệt đơn') {
+            // Đơn hàng đã duyệt, không cần thực hiện gì cả
+            return response()->json(['status' => 'Đã duyệt đơn', 'message' => 'Đơn hàng đã được duyệt.']);
+        }
+
+        // Đánh dấu đơn hàng đã duyệt
+        $order->status = 'Đã duyệt đơn';
+        $order->save();
+
+        // Gửi job vào hàng đợi để gửi email
+        // $employeeData = [
+        //     'name' => $user->name,
+        //     'email' => $user->email,
+        //     'password' => $request->password,
+        // ];
+        SendOrderApprovalEmail::dispatch($order);
+
+        return response()->json(['status' => 'Đã duyệt đơn', 'message' => 'Đơn hàng đã được duyệt.']);
     }
 }

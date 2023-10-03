@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone');
+            $table->string('mobile');
             $table->string('address');
             $table->string('password');
-            $table->string('total_amount');
+            $table->string('total_amount')->nullable();
             $table->timestamps();
         });
     }

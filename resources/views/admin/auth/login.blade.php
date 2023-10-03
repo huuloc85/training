@@ -7,18 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Connect Plus</title>
     <!-- plugins:css -->
-    <link rel="stylesheet" href="admin/assets/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="admin/assets/vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="admin/assets/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/mdi/css/materialdesignicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/flag-icon-css/css/flag-icon.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('admin/assets/vendors/css/vendor.bundle.base.css') }}">
     <!-- endinject -->
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
     <!-- endinject -->
     <!-- Layout styles -->
-    <link rel="stylesheet" href="admin/assets/css/style.css">
+    <link rel="stylesheet" href="{{ asset('admin/assets/css/style.css') }}">
     <!-- End layout styles -->
-    <link rel="shortcut icon" href="admin/assets/images/favicon.png" />
+    <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.png') }}" />
 </head>
 
 <body>
@@ -39,19 +39,25 @@
                                         {{ Session::get('error') }}
                                     </div>
                                 @endif
-                                @if (Session::has('success'))
+                                {{-- @if (Session::has('success'))
                                     <div class="alert alert-success">
                                         {{ Session::get('success') }}
                                     </div>
-                                @endif
+                                @endif --}}
                                 @csrf
                                 <div class="form-group">
                                     <input type="email" class="form-control form-control-lg" id="exampleInputEmail1"
-                                        name="email" placeholder="Email">
+                                        name="email" placeholder="Email" value="{{ old('email') }}">
+                                    @error('email')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <div class="form-group">
                                     <input type="password" class="form-control form-control-lg"
                                         id="exampleInputPassword1" name="password" placeholder="Password">
+                                    @error('password')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
                                 </div>
                                 <button type="submit"
                                     class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">
@@ -82,14 +88,14 @@
     </div>
     <!-- container-scroller -->
     <!-- plugins:js -->
-    <script src="admin/assets/vendors/js/vendor.bundle.base.js"></script>
+    <script src="{{ asset('admin/assets/vendors/js/vendor.bundle.base.js') }}"></script>
     <!-- endinject -->
     <!-- Plugin js for this page -->
     <!-- End plugin js for this page -->
     <!-- inject:js -->
-    <script src="admin/assets/js/off-canvas.js"></script>
-    <script src="admin/assets/js/hoverable-collapse.js"></script>
-    <script src="admin/assets/js/misc.js"></script>
+    <script src="{{ asset('admin/assets/js/off-canvas.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/hoverable-collapse.js') }}"></script>
+    <script src="{{ asset('admin/assets/js/misc.js') }}"></script>
     <!-- endinject -->
 </body>
 

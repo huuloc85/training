@@ -3,12 +3,17 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderSaveRequest;
+use App\Http\Requests\OrderUpdateRequest;
+use App\Jobs\SendOrderApprovalEmail;
+use App\Mail\OrderApproved;
 use App\Models\Product;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -27,29 +32,44 @@ class OrderController extends Controller
         return view('admin.order.add', compact('products', 'customers'));
     }
 
-    public function save(Request $request)
+    public function save(OrderSaveRequest $request)
     {
-        $product = Product::find($request->product_id);
-        //save order
-        $order = new Order();
-        $order->customer_id   = $request->customer_id;
-        $order->total = $request->quantity * $product->proPrice;
-        // $order->date_at = $request->date_at;
-        $order->note = $request->note;
-        $order->status = $request->status;
-        $order->save();
+        try {
+            // Tìm sản phẩm theo ID
+            $product = Product::find($request->product_id);
 
-        //save order detail
-        $orderDetail = new OrderDetail();
-        $orderDetail->order_id = $order->id;
-        $orderDetail->product_id = $request->product_id;
-        $orderDetail->quantity = $request->quantity;
-        $orderDetail->total = $request->quantity * $product->proPrice;
-        $orderDetail->save();
-        // dd($order);
+            // Kiểm tra xem sản phẩm có sẵn đủ số lượng không
+            if ($product->proQuantity < $request->quantity) {
+                return redirect()->route('order-list')->with('error', 'Số lượng sản phẩm không đủ.');
+            }
 
-        return redirect()->route('order-list')->with('success', 'Order added successfully!');
+            // Lưu đơn hàng
+            $order = new Order();
+            $order->customer_id = $request->customer_id;
+            $order->total = $request->quantity * $product->proPrice;
+            $order->note = $request->note;
+            $order->status = $request->status;
+            $order->save();
+
+            // Lưu chi tiết đơn hàng
+            $orderDetail = new OrderDetail();
+            $orderDetail->order_id = $order->id;
+            $orderDetail->product_id = $product->id; // Lấy ID sản phẩm từ đối tượng sản phẩm
+            $orderDetail->quantity = $request->quantity;
+            $orderDetail->total = $request->quantity * $product->proPrice;
+            $orderDetail->save();
+
+            // Cập nhật số lượng sản phẩm
+            $product->proQuantity -= $request->quantity;
+            $product->save();
+
+            return redirect()->route('order-list')->with('success', 'Đã thêm đơn hàng thành công!');
+        } catch (\Exception $th) {
+            return redirect()->route('order-list')->with('error', 'Đã xảy ra lỗi khi thêm đơn hàng.');
+        }
     }
+
+
 
     public function show($id)
     {
@@ -65,7 +85,7 @@ class OrderController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(OrderUpdateRequest  $request, $id)
     {
         // Xử lý cập nhật thông tin đơn hàng vào CSDL
         $order = Order::findOrFail($id);
@@ -86,23 +106,35 @@ class OrderController extends Controller
 
         return redirect()->route('order-list')->with('success', 'Order deleted successfully!');
     }
-    public function approveAllOrders(Request $request)
+
+    public function approveOrder($id)
     {
-        try {
-            // Lấy tất cả các đơn hàng đã nhận đơn
-            $orders = Order::where('status', 'Đã nhận đơn')->get();
+        // Xử lý duyệt đơn hàng
+        $order = Order::find($id);
 
-            // Duyệt qua từng đơn hàng và cập nhật trạng thái thành "Đã duyệt đơn"
-            foreach ($orders as $order) {
-                $order->status = 'Đã duyệt đơn'; // Cập nhật giá trị cột status
-                $order->save(); // Lưu thay đổi vào cơ sở dữ liệu
-            }
-
-            // Trả về phản hồi JSON trống
-            return response()->json([], 200);
-        } catch (\Exception $e) {
-            // Xử lý lỗi nếu có
-            return response()->json([], 500);
+        if (!$order) {
+            // Xử lý trường hợp không tìm thấy đơn hàng
+            return response()->json(['status' => 'Lỗi', 'message' => 'Không tìm thấy đơn hàng.']);
         }
+
+        // Kiểm tra trạng thái đơn hàng đã duyệt
+        if ($order->status === 'Đã duyệt đơn') {
+            // Đơn hàng đã duyệt, không cần thực hiện gì cả
+            return response()->json(['status' => 'Đã duyệt đơn', 'message' => 'Đơn hàng đã được duyệt.']);
+        }
+
+        // Đánh dấu đơn hàng đã duyệt
+        $order->status = 'Đã duyệt đơn';
+        $order->save();
+
+        // Gửi job vào hàng đợi để gửi email
+        // $employeeData = [
+        //     'name' => $user->name,
+        //     'email' => $user->email,
+        //     'password' => $request->password,
+        // ];
+        SendOrderApprovalEmail::dispatch($order);
+
+        return response()->json(['status' => 'Đã duyệt đơn', 'message' => 'Đơn hàng đã được duyệt.']);
     }
 }

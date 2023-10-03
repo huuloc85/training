@@ -6,6 +6,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Edit Customer</h4>
+                        @if (Session::has('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ Session::get('success') }}
+                            </div>
+                        @endif
+
+                        @if (Session::has('error'))
+                            <div class="alert alert-error" role="alert">
+                                {{ Session::get('error') }}
+                            </div>
+                        @endif
                         <form class="forms-sample" action="{{ route('customer-update', $customer->id) }}" method="post">
                             @method('PUT')
                             @csrf

@@ -12,7 +12,7 @@ class CustomerStoreRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         // Xác định xem người dùng có được phép thực hiện yêu cầu này hay không.
         // Trong trường hợp kiểm tra xác thực của khách hàng, bạn có thể trả về true
@@ -20,12 +20,8 @@ class CustomerStoreRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
-    public function rules()
+
+    public function rules(): array
     {
         return [
             'name' => 'required|string|max:255',

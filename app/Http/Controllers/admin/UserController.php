@@ -92,14 +92,14 @@ class UserController extends Controller
 
         $user->role = $request->role;
         $user->mobile = $request->mobile;
-        $oldImg = $user->image;
+        $oldImg = $user->photo;
 
         if ($request->hasFile('new_image')) {
             $fileExtension = $request->file('new_image')->getClientOriginalExtension();
             $fileName = time();
             $newFileName = $fileName . '.' . $fileExtension;
             $request->file('new_image')->storeAs('public/user', $newFileName);
-            $user->image = $newFileName;
+            $user->photo = $newFileName;
         }
 
         $updateSuccess = $user->save();
@@ -126,11 +126,18 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
+
+        // Kiểm tra xem người dùng có vai trò là "admin" không
+        if ($user->role === 1) {
+            return redirect()->back()->with('error', 'Không thể xóa người dùng với vai trò là admin.');
+        }
+
         $image = 'public/user/' . $user->photo;
         Storage::delete($image);
         $user->delete();
         return redirect()->back()->with('success', 'User delete successfully!');
     }
+
     public function showViewChangePassword()
     {
         // Đưa code để hiển thị view thay đổi mật khẩu ở đây

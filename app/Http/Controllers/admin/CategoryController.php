@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategorySaveRequest;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class CategoryController extends Controller
     {
         return view('admin.category.add ');
     }
-    public function save(Request $request)
+    public function save(CategorySaveRequest  $request)
     {
         $category = new Category();
         $category->catName = $request->catName;

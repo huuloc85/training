@@ -7,12 +7,12 @@ use Illuminate\Validation\Rule;
 
 class CustomerUpdateRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    public function rules()
+    public function rules(): array
     {
         // Sử dụng Rule::unique để kiểm tra email và mobile không trùng với các khách hàng khác (loại trừ khách hàng hiện tại)
         return [

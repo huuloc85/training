@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ChangePasswordRequest extends FormRequest
+class OrderUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -22,9 +22,9 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'old_password' => ['required'],
-            'new_password' => ['required', 'min:6'],
-            'new_password_confirmation' => ['required', 'same:new_password'],
+            'customer_id' => 'required|exists:customers,id', // Kiểm tra xem customer_id có tồn tại trong bảng customers không
+            'order_date' => 'required|date', // Kiểm tra order_date là một ngày hợp lệ
+            'total_amount' => 'required|numeric|min:0', // Kiểm tra total_amount là số và không âm
         ];
     }
 }

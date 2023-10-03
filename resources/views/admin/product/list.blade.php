@@ -30,6 +30,7 @@
                                         <th>Price</th>
                                         <th>Quantity</th>
                                         <th>Image</th>
+                                        {{-- <th>Photo Detail</th> --}}
                                         <th>Details</th>
                                         <th>Category</th>
                                         <th>Added By</th>
@@ -44,9 +45,17 @@
                                             <td>{{ $product->proName }}</td>
                                             <td>{{ $product->proSlug }}</td>
                                             <td>{{ number_format($product->proPrice, 0, '.', ',') }} VNĐ</td>
-                                            <td>{{ $product->proQuantity }}</td>
+                                            <td>
+                                                @if ($product->proQuantity == 0)
+                                                    Hết hàng
+                                                @else
+                                                    {{ $product->proQuantity }}
+                                                @endif
+                                            </td>
+
                                             <td><img src="{{ asset('storage/productImage/' . $product->proImage) }}"
                                                     style="height: 100px; width: 100px;"></td>
+
                                             <td>{{ $product->proDetail }}</td>
                                             <td>{{ $product->category->catName }}</td>
                                             <td>
@@ -102,8 +111,6 @@
                                                 <script>
                                                     $(document).ready(function() {});
                                                 </script>
-
-
                                             </td>
                                         </tr>
                                     @endforeach

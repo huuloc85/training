@@ -77,6 +77,42 @@
                         @enderror
                         <br>
                     </div>
+                    <div class="form-group">
+                        <label for="photo">Product Images Detail</label>
+                        <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo"
+                            name="photo[]" multiple>
+                        @error('photo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                        @if ($pro->photoDetails->count() > 0)
+                            <div class="image-container">
+                                @foreach ($pro->photoDetails as $photoDetail)
+                                    <img src="{{ asset('storage/productImageDetails/' . $photoDetail->photos) }}"
+                                        style="height: 100px; width: 100px;">
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+
+
+                    <style>
+                        .image-container {
+                            display: inline-block;
+                            /* Để các hình ảnh được xếp cạnh nhau */
+                            margin: 10px;
+                            /* Khoảng cách giữa các hình ảnh */
+                        }
+
+                        .image-container img {
+                            width: 150px;
+                            /* Chiều rộng cố định của hình ảnh */
+                            height: auto;
+                            /* Để duy trì tỷ lệ khung hình ban đầu */
+                        }
+                    </style>
+
+
+
 
                     <!-- Add a dropdown to select the category -->
                     <div class="form-group">

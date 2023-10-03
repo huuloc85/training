@@ -4,6 +4,17 @@
         <div class="row">
             <div class="container mt-3" style="margin-top: 20px">
                 <h2>Add New Order</h2>
+                @if (Session::has('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ Session::get('success') }}
+                    </div>
+                @endif
+
+                @if (Session::has('error'))
+                    <div class="alert alert-error" role="alert">
+                        {{ Session::get('error') }}
+                    </div>
+                @endif
                 <!-- Add success message display logic here -->
                 <form action="{{ route('order-save') }}" method="post">
                     @csrf

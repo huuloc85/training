@@ -4,6 +4,17 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">User List</h4>
+                @if (Session::has('success'))
+                    <div class="alert alert-success" role="alert">
+                        {{ Session::get('success') }}
+                    </div>
+                @endif
+
+                @if (Session::has('error'))
+                    <div class="alert alert-error" role="alert">
+                        {{ Session::get('error') }}
+                    </div>
+                @endif
                 <div class="table-responsive">
                     <table class="table table-striped">
                         <thead>

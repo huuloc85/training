@@ -12,6 +12,12 @@
                                 {{ Session::get('success') }}
                             </div>
                         @endif
+
+                        @if (Session::has('error'))
+                            <div class="alert alert-error" role="alert">
+                                {{ Session::get('error') }}
+                            </div>
+                        @endif
                         <form action="{{ route('order-update', $order->id) }}" method="POST">
                             @csrf
                             @method('PUT')

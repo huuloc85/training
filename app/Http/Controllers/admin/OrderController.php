@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\OrderSaveRequest;
+use App\Http\Requests\OrderUpdateRequest;
 use App\Jobs\SendOrderApprovalEmail;
 use App\Mail\OrderApproved;
 use App\Models\Product;
@@ -30,29 +32,44 @@ class OrderController extends Controller
         return view('admin.order.add', compact('products', 'customers'));
     }
 
-    public function save(Request $request)
+    public function save(OrderSaveRequest $request)
     {
-        $product = Product::find($request->product_id);
-        //save order
-        $order = new Order();
-        $order->customer_id   = $request->customer_id;
-        $order->total = $request->quantity * $product->proPrice;
-        // $order->date_at = $request->date_at;
-        $order->note = $request->note;
-        $order->status = $request->status;
-        $order->save();
+        try {
+            // Tìm sản phẩm theo ID
+            $product = Product::find($request->product_id);
 
-        //save order detail
-        $orderDetail = new OrderDetail();
-        $orderDetail->order_id = $order->id;
-        $orderDetail->product_id = $request->product_id;
-        $orderDetail->quantity = $request->quantity;
-        $orderDetail->total = $request->quantity * $product->proPrice;
-        $orderDetail->save();
-        // dd($order);
+            // Kiểm tra xem sản phẩm có sẵn đủ số lượng không
+            if ($product->proQuantity < $request->quantity) {
+                return redirect()->route('order-list')->with('error', 'Số lượng sản phẩm không đủ.');
+            }
 
-        return redirect()->route('order-list')->with('success', 'Order added successfully!');
+            // Lưu đơn hàng
+            $order = new Order();
+            $order->customer_id = $request->customer_id;
+            $order->total = $request->quantity * $product->proPrice;
+            $order->note = $request->note;
+            $order->status = $request->status;
+            $order->save();
+
+            // Lưu chi tiết đơn hàng
+            $orderDetail = new OrderDetail();
+            $orderDetail->order_id = $order->id;
+            $orderDetail->product_id = $product->id; // Lấy ID sản phẩm từ đối tượng sản phẩm
+            $orderDetail->quantity = $request->quantity;
+            $orderDetail->total = $request->quantity * $product->proPrice;
+            $orderDetail->save();
+
+            // Cập nhật số lượng sản phẩm
+            $product->proQuantity -= $request->quantity;
+            $product->save();
+
+            return redirect()->route('order-list')->with('success', 'Đã thêm đơn hàng thành công!');
+        } catch (\Exception $th) {
+            return redirect()->route('order-list')->with('error', 'Đã xảy ra lỗi khi thêm đơn hàng.');
+        }
     }
+
+
 
     public function show($id)
     {
@@ -68,7 +85,7 @@ class OrderController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(OrderUpdateRequest  $request, $id)
     {
         // Xử lý cập nhật thông tin đơn hàng vào CSDL
         $order = Order::findOrFail($id);

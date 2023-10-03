@@ -21,17 +21,15 @@ class ProductSaveRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
      */
     public function rules(): array
-
     {
-        $categories_id = Category::all()->pluck('id')->toArray();
         return [
-            'proName' => ['required', 'min:3', 'max:255'],
-            'proSlug' => ['required', 'min:3', 'max:255', 'unique:products'],
-            'proPrice' => ['required', 'numeric', 'min:10000', 'max:1000000000'],
-            'proDetail' => ['required', 'min:3', 'max:200'],
-            'proImage' => [],
-            'proQuantity' => ['required', 'numeric', 'min:1', 'max:1000'],
-            'category_id' => ['required', 'numeric', 'in:' . implode(',', $categories_id)],
+            'proName' => 'required|string|max:255',
+            'proSlug' => 'required|string|unique:products,proSlug|max:255',
+            'proPrice' => 'required|numeric|min:0',
+            'proDetail' => 'required|string',
+            'proQuantity' => 'required|integer|min:1',
+            'category_id' => 'required|exists:categories,id',
+            // Kiểm tra loại file và kích thước tối đa cho nhiều hình ảnh
         ];
     }
 }

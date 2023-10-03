@@ -45,16 +45,16 @@
                                             <td>{{ $product->proName }}</td>
                                             <td>{{ $product->proSlug }}</td>
                                             <td>{{ number_format($product->proPrice, 0, '.', ',') }} VNĐ</td>
-                                            <td>{{ $product->proQuantity }}</td>
+                                            <td>
+                                                @if ($product->proQuantity == 0)
+                                                    Hết hàng
+                                                @else
+                                                    {{ $product->proQuantity }}
+                                                @endif
+                                            </td>
+
                                             <td><img src="{{ asset('storage/productImage/' . $product->proImage) }}"
                                                     style="height: 100px; width: 100px;"></td>
-                                            {{-- photo detail --}}
-                                            {{-- <td>
-                                                @foreach ($product->photoDetails as $photoDetail)
-                                                    <img src="{{ asset('storage/productImageDetails/' . $photoDetail->photos) }}"
-                                                        style="height: 100px; width: 100px;">
-                                                @endforeach
-                                            </td> --}}
 
                                             <td>{{ $product->proDetail }}</td>
                                             <td>{{ $product->category->catName }}</td>
@@ -111,8 +111,6 @@
                                                 <script>
                                                     $(document).ready(function() {});
                                                 </script>
-
-
                                             </td>
                                         </tr>
                                     @endforeach

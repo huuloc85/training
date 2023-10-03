@@ -6,6 +6,17 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Add New Customer</h4>
+                        @if (Session::has('success'))
+                            <div class="alert alert-success" role="alert">
+                                {{ Session::get('success') }}
+                            </div>
+                        @endif
+
+                        @if (Session::has('error'))
+                            <div class="alert alert-error" role="alert">
+                                {{ Session::get('error') }}
+                            </div>
+                        @endif
                         <form class="forms-sample" action="{{ route('customer-save') }}" method="post">
                             @csrf
                             <div class="form-group">
@@ -56,7 +67,7 @@
                             <!-- Add other fields here as needed -->
                             <button type="submit" class="btn btn-primary mr-2">Add Customer</button>
                             <a href="{{ route('customer-list') }}" class="btn btn-light">Back</a>
-                        </form>c
+                        </form>
                     </div>
                 </div>
             </div>

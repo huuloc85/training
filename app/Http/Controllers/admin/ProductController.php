@@ -54,7 +54,6 @@ class ProductController extends Controller
 
             // Lưu sản phẩm vào cơ sở dữ liệu
             $product->save();
-
             if ($request->hasFile('photo')) {
                 foreach ($request->file('photo') as $key => $file) {
                     $photoDetail = new PhotoDetail();
@@ -72,7 +71,6 @@ class ProductController extends Controller
             }
             return redirect()->back()->with('success', 'Product and photo added successfully!');
         } catch (\Exception $th) {
-            dd($th->getMessage());
             // Xử lý ngoại lệ và xóa hình ảnh nếu cần
             if (isset($product->proImage)) {
                 $imagePath = 'public/productImage/' . $product->proImage;
@@ -86,18 +84,6 @@ class ProductController extends Controller
         }
     }
 
-    // public function edit($proSlug)
-    // {
-    //     $cat = Category::get();
-    //     $pro = Product::where('proSlug', '=', $proSlug)->first();
-
-    //     if (!$pro) {
-    //         // Xử lý khi không tìm thấy sản phẩm với proSlug cụ thể
-    //         // Ví dụ: return redirect()->route('product-list')->with('error', 'Product not found.');
-    //     }
-
-    //     return view('admin.product.edit', compact('pro', 'cat'));
-    // }
     public function edit($proSlug)
     {
         try {
@@ -110,51 +96,6 @@ class ProductController extends Controller
         }
     }
 
-
-    // public function update(ProductUpdateRequest $request, $proSlug)
-    // {
-    //     try {
-    //         // Tìm sản phẩm bằng proSlug
-    //         $product = Product::where('proSlug', $proSlug)->firstOrFail();
-
-    //         // Kiểm tra nếu yêu cầu chứa tệp ảnh mới
-    //         if ($request->hasFile('proImage')) {
-    //             // Xóa hình ảnh cũ (nếu có)
-    //             if ($product->proImage) {
-    //                 Storage::delete('public/productImage/' . $product->proImage);
-    //             }
-
-    //             $file = $request->file('proImage');
-    //             $fileExtension = $file->getClientOriginalExtension();
-    //             $fileName = time();
-    //             $newFileName = $fileName . '.' . $fileExtension;
-    //             $file->storeAs('public/productImage', $newFileName);
-    //             $product->proImage = $newFileName;
-    //         }
-
-    //         // Gán giá trị cho các thuộc tính khác của sản phẩm
-    //         $product->proName = $request->proName;
-    //         $product->proSlug = $request->proSlug;
-    //         $product->proDetail = $request->proDetail;
-    //         $product->proPrice = $request->proPrice;
-    //         $product->proQuantity = $request->proQuantity;
-    //         $product->category_id = $request->category_id; // Sửa tên trường là category_id
-
-    //         // Cập nhật người cập nhật sản phẩm
-    //         $product->user_updated = Auth::user()->id;
-
-    //         // Lưu sản phẩm
-    //         $product->save();
-
-    //         return redirect()->route('product-list')->with('success', 'Product updated successfully!');
-    //     } catch (\Exception $th) {
-    //         // Trong trường hợp lưu cơ sở dữ liệu thất bại, hãy xóa hình ảnh mới (nếu có)
-    //         if ($request->hasFile('proImage')) {
-    //             Storage::delete('public/productImage/' . $newFileName);
-    //         }
-    //         return redirect()->route('product-list')->with('error', 'Product could not be updated!');
-    //     }
-    // }
     public function update(ProductUpdateRequest $request, $proSlug)
     {
         try {

@@ -22,12 +22,12 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|max:255',
             'email' => 'required|email|unique:users,email',
-            'username' => 'required|string|unique:users,username',
+            'username' => 'required|unique:users,username',
             'password' => 'required|min:6|confirmed',
-            'password_confirmation' => 'required|min:6|confirmed', // Thêm confirmed để kiểm tra mật khẩu nhập lại
-            'mobile' => 'required|numeric', // Kiểu số
+            'password_confirmation' => 'required|min:6', // Thêm confirmed để kiểm tra mật khẩu nhập lại
+            'mobile' => 'required|unique:users,mobile', // Kiểu số
             'image' => 'image|mimes:jpeg,png,jpg,gif',
         ];
     }

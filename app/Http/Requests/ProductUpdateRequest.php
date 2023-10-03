@@ -22,15 +22,15 @@ class ProductUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $categories_id = Category::all()->pluck('id')->toArray();
         return [
-            'proName' => ['required', 'string', 'min:3'],
-            'proSlug' => ['required', 'string', 'min:3'],
-            'proPrice' => ['required', 'numeric', 'min:10000', 'max:1000000000'],
-            'proDetail' => ['required', 'string', 'min:3', 'max:200'],
-            'proImage' => [],
-            'proQuantity' => ['required', 'numeric', 'min:1', 'max:1000'],
-            'category_id' => ['required', 'numeric', 'in:' . implode(',', $categories_id)],
+            'proName' => 'required|string|max:255',
+            'proSlug' => 'required|string|max:255',
+            'proDetail' => 'required|string',
+            'proPrice' => 'required|numeric',
+            'proQuantity' => 'required|integer',
+            'category_id' => 'required|exists:categories,id', // Kiểm tra xem category_id có tồn tại trong bảng categories không
+            'new_image' => 'image|mimes:jpeg,png,jpg,gif', // Kiểm tra loại file
+            'photo.*' => 'image|mimes:jpeg,png,jpg,gif', // Kiểm tra loại file
         ];
     }
 }

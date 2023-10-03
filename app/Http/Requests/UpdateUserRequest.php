@@ -25,8 +25,13 @@ class UpdateUserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $this->id, // Đảm bảo không trùng với email của người dùng khác có id khác
             'username' => 'required|string|unique:users,username,' . $this->id, // Đảm bảo không trùng với username của người dùng khác có id khác
-            'mobile' => 'required|numeric',
-            'new_image' => 'required|image|mimes:jpeg,png,jpg,gif', // Kiểm tra hình ảnh mới
+            'mobile' => 'required|unique:users,mobile,' . $this->id, // Đảm bảo không trùng với số điện thoại của người dùng khác có id khác
         ];
+        // Kiểm tra nếu 'new_image' đã được điền, thì áp dụng quy tắc cho nó
+        if ($this->filled('new_image')) {
+            $rules['new_image'] = 'required|image|mimes:jpeg,png,jpg,gif';
+        }
+
+        return $rules;
     }
 }

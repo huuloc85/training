@@ -5,7 +5,6 @@
         <div class="card">
             <div class="card-body">
                 <h4 class="card-title">Add Product</h4>
-
                 @if (Session::has('success'))
                     <div class="alert alert-success" role="alert">
                         {{ Session::get('success') }}
